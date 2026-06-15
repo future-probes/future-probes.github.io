@@ -356,6 +356,7 @@
     <figure class="framed">
       <img src="figures/teaser.png" alt="Overview: detection vs. prediction features and the FPCG algorithm.">
       <figcaption>
+        <span class="fignum">Overview </span> 
         <strong>Left, top:</strong> existing steering methods rely on contrastive input pairs and <em>detect</em> behaviors in text.
         <strong>Left, bottom:</strong> a distinct set of features enables <em>predicting</em> future behaviors.
         <strong>Right:</strong> the proposed FPCG algorithm samples candidate sentences and selects the one that maximizes the
@@ -378,8 +379,7 @@
         <img src="figures/behavior_distribution_dynamics.png" alt="Behavior distribution dynamics for two example responses to the same prompt.">
         <figcaption>
           <span class="fignum">Behavior distribution dynamics</span> for two example responses to the same
-          prompt (Refusal / SORRY-Bench evaluation of DeepSeek-R1-Distill-Llama-8B). Minor differences in
-          the model's own wording can lead to large differences in outcome probabilities.
+          prompt. SORRY-Bench refusal vs. comprehension evaluation of DeepSeek-R1-Distill-Llama-8B.
         </figcaption>
       </figure>
     </section>
@@ -433,6 +433,13 @@
         </figcaption>
       </figure>
     </section>
+
+    <p>
+        We find that FPCG enables steering with less quality degradation than standard difference-in-means activation steering.
+    </p>
+    <div class="callout">
+        🔎 <a href="https://arxiv.org/abs/2606.11172">Read our paper if you want to learn more! &rarr;</a>
+      </div>
 
     <hr class="rule">
 
