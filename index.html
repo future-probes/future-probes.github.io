@@ -356,11 +356,9 @@
     <figure class="framed">
       <img src="figures/teaser.png" alt="Overview: detection vs. prediction features and the FPCG algorithm.">
       <figcaption>
-        <span class="fignum">Overview.</span> LLMs have distinct features for detecting past and
-        predicting future behaviors, enabling steering. <strong>Left:</strong> existing steering methods
-        use contrastive response activations that capture <em>detection</em> features (top); a distinct
-        set of features enables future behavior <em>prediction</em> (bottom). <strong>Right:</strong> the
-        proposed FPCG algorithm samples candidate sentences and selects the one that maximizes the
+        <strong>Left, top:</strong> existing steering methods rely on contrastive input pairs and <em>detect</em> behaviors in text.
+        <strong>Left, bottom:</strong> a distinct set of features enables <em>predicting</em> future behaviors.
+        <strong>Right:</strong> the proposed FPCG algorithm samples candidate sentences and selects the one that maximizes the
         activation of a probe predicting future behavior likelihoods.
       </figcaption>
     </figure>
