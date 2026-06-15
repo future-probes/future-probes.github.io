@@ -16,28 +16,31 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,300;0,400;0,500;0,700;1,400&display=swap" rel="stylesheet">
 
 <style>
   :root {
     --maxw: 1056px;         /* ~20% wider than the original 880px */
 
-    /* Warm, beige-forward palette (Anthropic-inspired, not copied) */
-    --bg: #f5f0e6;          /* pleasant beige page background */
-    --panel: #ece3d2;       /* slightly darker: summary box & demo link */
-    --panel-border: #ddd0b8;
-    --cite-bg: #dccdac;     /* yet darker, but still warm & light: citation */
-    --cite-border: #cdbb95;
+    /* Light-grey page with clean white panels */
+    --bg: #f3f3f4;          /* very light grey background */
+    --panel: #ffffff;       /* white panels: summary, demo link, citation */
+    --panel-border: #e4e4e7;
+    --cite-bg: #ffffff;
+    --cite-border: #e4e4e7;
 
-    --ink: #2c2a23;         /* warm near-black text */
-    --muted: #756d5c;       /* warm grey for captions */
+    --ink: #242528;         /* near-black text */
+    --muted: #6b6e76;       /* grey for captions */
 
-    --link: #4a6b50;        /* tasteful muted forest green accent */
-    --link-hover: #355039;
+    --link: #2e75d4;        /* pleasant blue (nerfies-style) */
+    --link-hover: #1c4f96;
 
-    --rule: #ddd2bf;
-    --card-bg: #fbf8f1;
-    --card-border: #ddd0b8;
+    --name: #4f9e63;        /* slightly brighter green for author names */
+    --name-hover: #3d8550;
+
+    --rule: #e2e2e5;
+    --card-bg: #ffffff;
+    --card-border: #e4e4e7;
   }
 
   * { box-sizing: border-box; }
@@ -46,7 +49,7 @@
 
   body {
     margin: 0;
-    font-family: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-family: "Roboto", system-ui, -apple-system, "Segoe UI", sans-serif;
     color: var(--ink);
     background: var(--bg);
     line-height: 1.65;
@@ -69,22 +72,35 @@
   }
 
   h1.title {
-    font-family: "Source Serif 4", Georgia, serif;
+    font-family: "Roboto", system-ui, sans-serif;
     font-weight: 700;
-    font-size: 2.35rem;
-    line-height: 1.18;
-    letter-spacing: -0.01em;
+    font-size: 2.3rem;
+    line-height: 1.2;
+    letter-spacing: -0.015em;
     margin: 0 0 22px;
   }
 
   .authors {
     font-size: 1.12rem;
     line-height: 1.9;
-    margin: 0 auto 6px;
-    max-width: 760px;
+    margin: 0 auto 8px;
+    max-width: 820px;
     color: var(--ink);
   }
-  .authors a { color: var(--link); font-weight: 600; }
+  .authors a { color: var(--name); font-weight: 500; }
+  .authors a:hover { color: var(--name-hover); }
+  .authors sup { font-size: 0.7em; font-weight: 500; color: var(--link); padding-left: 1px; }
+
+  .affils {
+    margin: 0 auto 4px;
+    max-width: 820px;
+    font-size: 1rem;
+    color: var(--muted);
+  }
+  .affils a { color: var(--link); }
+  .affils a:hover { color: var(--link-hover); }
+  .affils sup { font-size: 0.7em; padding-right: 1px; }
+  .affils .sep { color: var(--muted); padding: 0 8px; }
 
   .tldr {
     max-width: 720px;
@@ -103,48 +119,49 @@
     margin: 38px auto 6px;
   }
   .resource {
-    width: 150px;
     text-align: center;
     color: var(--ink);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
   .resource:hover { text-decoration: none; }
+
+  /* Each thumbnail keeps its own aspect ratio; all share a common height. */
   .resource .thumb {
-    height: 112px;
-    width: 100%;
-    border: 1px solid var(--card-border);
-    border-radius: 10px;
-    overflow: hidden;
-    background: var(--card-bg);
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
-    transition: transform .15s ease, box-shadow .15s ease;
+    height: 150px;
     display: flex;
     align-items: center;
     justify-content: center;
+    transition: transform .15s ease;
   }
-  .resource:hover .thumb {
-    transform: translateY(-3px);
-    box-shadow: 0 6px 18px rgba(0,0,0,0.13);
-  }
+  .resource:hover .thumb { transform: translateY(-3px); }
+
+  /* Screenshot thumbnails: framed cards, natural (portrait / landscape) shape. */
   .resource .thumb img.shot {
-    width: 100%;
     height: 100%;
-    object-fit: cover;
-    object-position: top center;
+    width: auto;
     display: block;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.10);
   }
-  .resource .thumb .logo { width: 52px; height: 52px; }
-  .resource .thumb.logo-box.hf { background: #faf3e2; }
-  .resource .thumb.logo-box.gh { background: #f3eede; }
+  /* Logo thumbnails: shown as-is, no card frame (own shape). */
+  .resource .thumb.logo-box { padding: 14px; }
+  .resource .thumb .logo {
+    height: 100%;
+    width: auto;
+    max-width: 122px;
+    object-fit: contain;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.10));
+  }
   .resource .label {
-    margin-top: 10px;
-    font-weight: 600;
+    margin-top: 12px;
+    font-weight: 700;
     font-size: 1rem;
+    color: var(--link);
   }
-  .resource .sub {
-    color: var(--muted);
-    font-size: 0.82rem;
-    font-weight: 400;
-  }
+  .resource:hover .label { text-decoration: underline; color: var(--link-hover); }
 
   /* ---------- Content ---------- */
   main { padding: 18px 0 40px; }
@@ -158,9 +175,9 @@
   section { margin: 0 0 8px; }
 
   h2 {
-    font-family: "Source Serif 4", Georgia, serif;
+    font-family: "Roboto", system-ui, sans-serif;
     font-weight: 700;
-    font-size: 1.65rem;
+    font-size: 1.6rem;
     line-height: 1.25;
     margin: 38px 0 14px;
     letter-spacing: -0.01em;
@@ -219,7 +236,7 @@
   .bibtex-wrap { position: relative; }
   pre.bibtex {
     background: var(--cite-bg);
-    color: #3a3424;
+    color: var(--ink);
     border: 1px solid var(--cite-border);
     border-radius: 12px;
     padding: 22px 24px;
@@ -233,16 +250,16 @@
     position: absolute;
     top: 12px;
     right: 12px;
-    background: rgba(58,52,36,0.10);
-    color: #3a3424;
-    border: 1px solid var(--cite-border);
+    background: #f3f3f4;
+    color: var(--link);
+    border: 1px solid var(--card-border);
     border-radius: 6px;
     padding: 5px 12px;
     font-size: 0.8rem;
     cursor: pointer;
     font-family: inherit;
   }
-  .copy-btn:hover { background: rgba(58,52,36,0.18); }
+  .copy-btn:hover { background: #e8e8ea; }
 
   /* ---------- Footer ---------- */
   footer {
@@ -274,14 +291,20 @@
     <h1 class="title">Predicting Future Behaviors in Reasoning Models Enables Better Steering</h1>
 
     <p class="authors">
-      <a href="https://kortukov.github.io/">Evgenii Kortukov</a>,
-      <a href="https://www.linkedin.com/in/piotr-komorowski/">Piotr Komorowski</a>,
-      <a href="https://www.linkedin.com/in/florian-klein-76a40a25a/">Florian Klein</a>,
-      <a href="https://www.linkedin.com/in/paula-engl/">Paula Engl</a>,
-      <a href="https://gsarti.com/">Gabriele Sarti</a>,
-      <a href="https://seongjoonoh.com/">Seong Joon Oh</a>,
-      <a href="https://iphome.hhi.de/lapuschkin/">Sebastian Lapuschkin</a>,
-      <a href="https://iphome.hhi.de/samek/">Wojciech Samek</a>
+      <a href="https://kortukov.github.io/">Evgenii Kortukov</a><sup>1</sup>,
+      <a href="https://www.linkedin.com/in/piotr-komorowski/">Piotr Komorowski</a><sup>1</sup>,
+      <a href="https://www.linkedin.com/in/florian-klein-76a40a25a/">Florian Klein</a><sup>1</sup>,
+      <a href="https://www.linkedin.com/in/paula-engl/">Paula Engl</a><sup>1</sup>,
+      <a href="https://gsarti.com/">Gabriele Sarti</a><sup>2</sup>,
+      <a href="https://seongjoonoh.com/">Seong Joon Oh</a><sup>3</sup>,
+      <a href="https://iphome.hhi.de/lapuschkin/">Sebastian Lapuschkin</a><sup>1</sup>,
+      <a href="https://iphome.hhi.de/samek/">Wojciech Samek</a><sup>1</sup>
+    </p>
+
+    <p class="affils">
+      <a href="https://www.hhi.fraunhofer.de/en/departments/ai/research-groups/explainable-artificial-intelligence.html"><sup>1</sup>Fraunhofer HHI</a><span class="sep">·</span>
+      <a href="https://baulab.info/"><sup>2</sup>Northeastern University</a><span class="sep">·</span>
+      <a href="https://s-t-a-i.github.io/"><sup>3</sup>KAIST</a>
     </p>
 
     <p class="tldr"><strong>TL;DR:</strong> Extracting latent LLM features that encode future
@@ -290,7 +313,7 @@
     <!-- ----- Resource links with thumbnails ----- -->
     <nav class="resources">
       <a class="resource" href="https://arxiv.org/abs/2606.11172">
-        <span class="thumb"><img class="shot" src="figures/thumbs/arxiv.png" alt="arXiv paper preview"></span>
+        <span class="thumb"><img class="shot" src="figures/thumbs/arxiv_paper.jpg" alt="arXiv paper preview"></span>
         <span class="label">Paper</span>
       </a>
 
@@ -304,7 +327,7 @@
       </a>
 
       <a class="resource" href="https://behavior-distributions-demo.github.io/">
-        <span class="thumb"><img class="shot" src="figures/thumbs/demo.png" alt="Interactive demo preview"></span>
+        <span class="thumb"><img class="shot" src="figures/thumbs/demo.jpg" alt="Interactive demo preview"></span>
         <span class="label">Demo</span>
       </a>
 
