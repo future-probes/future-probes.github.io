@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Predicting Future Behaviors in Reasoning Models Enables Better Steering</title>
+<meta name="description" content="Extracting latent LLM features that encode future behaviors enables a novel, non-invasive form of text-level steering.">
+
+<!-- Open Graph / social preview -->
+<meta property="og:title" content="Predicting Future Behaviors in Reasoning Models Enables Better Steering">
+<meta property="og:description" content="Extracting latent LLM features that encode future behaviors enables a novel, non-invasive form of text-level steering.">
+<meta property="og:image" content="figures/teaser.png">
+<meta property="og:type" content="website">
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --maxw: 880px;
+    --ink: #1a1a1a;
+    --muted: #5b6066;
+    --link: #b5121b;        /* arXiv-style deep red accent */
+    --link-hover: #e0242f;
+    --rule: #e7e7e9;
+    --card-bg: #fafafa;
+    --card-border: #e3e4e7;
+  }
+
+  * { box-sizing: border-box; }
+
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    font-family: "Source Sans 3", system-ui, -apple-system, "Segoe UI", sans-serif;
+    color: var(--ink);
+    background: #ffffff;
+    line-height: 1.65;
+    font-size: 18px;
+  }
+
+  .wrap {
+    max-width: var(--maxw);
+    margin: 0 auto;
+    padding: 0 24px;
+  }
+
+  a { color: var(--link); text-decoration: none; }
+  a:hover { color: var(--link-hover); text-decoration: underline; }
+
+  /* ---------- Header ---------- */
+  header.hero {
+    text-align: center;
+    padding: 64px 0 8px;
+  }
+
+  h1.title {
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 700;
+    font-size: 2.35rem;
+    line-height: 1.18;
+    letter-spacing: -0.01em;
+    margin: 0 0 22px;
+  }
+
+  .authors {
+    font-size: 1.12rem;
+    line-height: 1.9;
+    margin: 0 auto 6px;
+    max-width: 760px;
+    color: var(--ink);
+  }
+  .authors a { color: var(--link); font-weight: 600; }
+
+  .tldr {
+    max-width: 720px;
+    margin: 26px auto 0;
+    font-size: 1.05rem;
+    color: var(--muted);
+  }
+  .tldr strong { color: var(--ink); }
+
+  /* ---------- Resource links ---------- */
+  .resources {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 26px;
+    margin: 38px auto 6px;
+  }
+  .resource {
+    width: 150px;
+    text-align: center;
+    color: var(--ink);
+  }
+  .resource:hover { text-decoration: none; }
+  .resource .thumb {
+    height: 112px;
+    width: 100%;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    overflow: hidden;
+    background: #fff;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    transition: transform .15s ease, box-shadow .15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .resource:hover .thumb {
+    transform: translateY(-3px);
+    box-shadow: 0 6px 18px rgba(0,0,0,0.13);
+  }
+  .resource .thumb img.shot {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top center;
+    display: block;
+  }
+  .resource .thumb .logo { width: 52px; height: 52px; }
+  .resource .thumb.logo-box.hf { background: #fffbe8; }
+  .resource .thumb.logo-box.gh { background: #f6f8fa; }
+  .resource .label {
+    margin-top: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+  }
+  .resource .sub {
+    color: var(--muted);
+    font-size: 0.82rem;
+    font-weight: 400;
+  }
+
+  /* ---------- Content ---------- */
+  main { padding: 18px 0 40px; }
+
+  hr.rule {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 40px 0;
+  }
+
+  section { margin: 0 0 8px; }
+
+  h2 {
+    font-family: "Source Serif 4", Georgia, serif;
+    font-weight: 700;
+    font-size: 1.65rem;
+    line-height: 1.25;
+    margin: 38px 0 14px;
+    letter-spacing: -0.01em;
+  }
+
+  p { margin: 0 0 18px; }
+
+  .lead {
+    font-size: 1.12rem;
+  }
+
+  /* ---------- Figures ---------- */
+  figure {
+    margin: 30px 0;
+    text-align: center;
+  }
+  figure img {
+    max-width: 100%;
+    height: auto;
+    border-radius: 6px;
+  }
+  figure.framed img {
+    border: 1px solid var(--card-border);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  figure.narrow img { max-width: 80%; }
+  figcaption {
+    margin-top: 12px;
+    font-size: 0.92rem;
+    color: var(--muted);
+    line-height: 1.5;
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+  }
+  figcaption .fignum { font-weight: 600; color: var(--ink); }
+
+  .callout {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-left: 3px solid var(--link);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 22px 0;
+    font-size: 1.02rem;
+  }
+
+  /* ---------- BibTeX ---------- */
+  .bibtex-wrap { position: relative; }
+  pre.bibtex {
+    background: #1e1f22;
+    color: #e6e6e6;
+    border-radius: 10px;
+    padding: 20px 22px;
+    overflow-x: auto;
+    font-family: "SF Mono", "Cascadia Code", Menlo, Consolas, monospace;
+    font-size: 0.86rem;
+    line-height: 1.55;
+    margin: 8px 0 0;
+  }
+  .copy-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(255,255,255,0.12);
+    color: #fff;
+    border: 1px solid rgba(255,255,255,0.22);
+    border-radius: 6px;
+    padding: 5px 12px;
+    font-size: 0.8rem;
+    cursor: pointer;
+    font-family: inherit;
+  }
+  .copy-btn:hover { background: rgba(255,255,255,0.22); }
+
+  /* ---------- Footer ---------- */
+  footer {
+    border-top: 1px solid var(--rule);
+    padding: 28px 0 50px;
+    color: var(--muted);
+    font-size: 0.9rem;
+    text-align: center;
+  }
+
+  /* ---------- Responsive ---------- */
+  @media (max-width: 640px) {
+    body { font-size: 17px; }
+    h1.title { font-size: 1.8rem; }
+    h2 { font-size: 1.4rem; }
+    header.hero { padding: 40px 0 8px; }
+    .resources { gap: 18px; }
+    .resource { width: 132px; }
+    figure.narrow img { max-width: 100%; }
+  }
+</style>
+</head>
+
+<body>
+<div class="wrap">
+
+  <!-- ===================== HEADER ===================== -->
+  <header class="hero">
+    <h1 class="title">Predicting Future Behaviors in Reasoning Models Enables Better Steering</h1>
+
+    <p class="authors">
+      <a href="https://kortukov.github.io/">Evgenii Kortukov</a>,
+      <a href="https://www.linkedin.com/in/piotr-komorowski/">Piotr Komorowski</a>,
+      <a href="https://www.linkedin.com/in/florian-klein-76a40a25a/">Florian Klein</a>,
+      <a href="https://www.linkedin.com/in/paula-engl/">Paula Engl</a>,
+      <a href="https://gsarti.com/">Gabriele Sarti</a>,
+      <a href="https://seongjoonoh.com/">Seong Joon Oh</a>,
+      <a href="https://iphome.hhi.de/lapuschkin/">Sebastian Lapuschkin</a>,
+      <a href="https://iphome.hhi.de/samek/">Wojciech Samek</a>
+    </p>
+
+    <p class="tldr"><strong>TL;DR:</strong> Extracting latent LLM features that encode future
+      behaviors enables a novel, non-invasive form of text-level steering.</p>
+
+    <!-- ----- Resource links with thumbnails ----- -->
+    <nav class="resources">
+      <a class="resource" href="https://arxiv.org/abs/2606.11172">
+        <span class="thumb"><img class="shot" src="figures/thumbs/arxiv.png" alt="arXiv paper preview"></span>
+        <span class="label">Paper</span><br>
+        <span class="sub">arXiv preprint</span>
+      </a>
+
+      <a class="resource" href="https://github.com/kortukov/future_probes">
+        <span class="thumb logo-box gh">
+          <svg class="logo" viewBox="0 0 16 16" aria-hidden="true" fill="#1a1a1a">
+            <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"/>
+          </svg>
+        </span>
+        <span class="label">Code</span><br>
+        <span class="sub">GitHub</span>
+      </a>
+
+      <a class="resource" href="https://behavior-distributions-demo.github.io/">
+        <span class="thumb"><img class="shot" src="figures/thumbs/demo.png" alt="Interactive demo preview"></span>
+        <span class="label">Demo</span><br>
+        <span class="sub">Explore distributions</span>
+      </a>
+
+      <a class="resource" href="https://huggingface.co/future-probes">
+        <span class="thumb logo-box hf">
+          <img class="logo" src="figures/thumbs/hf_logo.png" alt="Hugging Face logo">
+        </span>
+        <span class="label">Data</span><br>
+        <span class="sub">Hugging Face</span>
+      </a>
+    </nav>
+  </header>
+
+  <!-- ===================== MAIN ===================== -->
+  <main>
+
+    <!-- Abstract / intro -->
+    <p class="lead">
+      Interpretability tools that predict and control model behaviors typically rely on contrastive
+      input pairs. This binary data hides the probabilistic nature of language model decision making.
+      During reasoning, LLMs can keep track of multiple behavioral options before committing. We find
+      that these future behavior distributions are reflected in their representations. We can steer the
+      behavioral outcome by choosing the reasoning sentences that maximize the estimated probability of
+      a future behavior.
+    </p>
+
+    <figure class="framed">
+      <img src="figures/teaser.png" alt="Overview: detection vs. prediction features and the FPCG algorithm.">
+      <figcaption>
+        <span class="fignum">Overview.</span> LLMs have distinct features for detecting past and
+        predicting future behaviors, enabling steering. <strong>Left:</strong> existing steering methods
+        use contrastive response activations that capture <em>detection</em> features (top); a distinct
+        set of features enables future behavior <em>prediction</em> (bottom). <strong>Right:</strong> the
+        proposed FPCG algorithm samples candidate sentences and selects the one that maximizes the
+        activation of a probe predicting future behavior likelihoods.
+      </figcaption>
+    </figure>
+
+    <hr class="rule">
+
+    <!-- Section 1 -->
+    <section>
+      <h2>Probabilistic view of LRM decision-making</h2>
+      <p>
+        Analyzing a single roll-out of a reasoning model is not enough to understand its behavior.
+        Instead, we resample after every reasoning step to get a probability of a future behavior
+        happening after this step. This allows us to see where the model commits to act in a certain way.
+      </p>
+
+      <figure class="framed narrow">
+        <img src="figures/behavior_distribution_dynamics.png" alt="Behavior distribution dynamics for two example responses to the same prompt.">
+        <figcaption>
+          <span class="fignum">Behavior distribution dynamics</span> for two example responses to the same
+          prompt (Refusal / SORRY-Bench evaluation of DeepSeek-R1-Distill-Llama-8B). Minor differences in
+          the model's own wording can lead to large differences in outcome probabilities.
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- Section 2 -->
+    <section>
+      <h2>Predicting future behaviors &ne; detecting current behaviors</h2>
+      <p>
+        We train a probe to predict these future behavior probabilities. Typically, one can estimate the
+        most likely behavior with high accuracy.
+      </p>
+
+      <div class="callout">
+        🔎 <a href="https://behavior-distributions-demo.github.io/">Explore how these probe predictions
+        look like in our interactive demo &rarr;</a>
+      </div>
+
+      <p>
+        Binary classifiers on contrastive data, typically used for detection and steering, are bad
+        predictors of future behaviors. Models represent behaviors that already happened differently from
+        the ones that will happen in the future.
+      </p>
+
+      <figure class="framed">
+        <img src="figures/detection_vs_prediction.png" alt="Comparison of probes using prediction features vs. detection features.">
+        <figcaption>
+          <span class="fignum">Detection vs. prediction features.</span> A Linear Probe trained on all
+          response sentences (prediction features) substantially outperforms one trained only on the final
+          answer activations (detection features) at predicting future behavior, across all behavioral
+          datasets.
+        </figcaption>
+      </figure>
+    </section>
+
+    <!-- Section 3 -->
+    <section>
+      <h2>Steering the model towards a desired future behavior</h2>
+      <p>
+        Estimating the probability of a future behavior can be used to steer the model towards a desired
+        outcome. We propose a simple algorithm &mdash; <strong>Future Probe Controlled Generation
+        (FPCG)</strong> &mdash; that samples multiple candidates for each sentence, and selects the best
+        using an activation probe that predicts future behavior likelihoods.
+      </p>
+
+      <figure class="framed">
+        <img src="figures/fpcg.png" alt="The Future Probe Controlled Generation (FPCG) algorithm.">
+        <figcaption>
+          <span class="fignum">FPCG.</span> For each reasoning step, the model generates several candidate
+          sentences and chooses the one that maximizes the activation of a prediction feature for the
+          desired behavior &mdash; steering at the text level, without modifying activations.
+        </figcaption>
+      </figure>
+    </section>
+
+    <hr class="rule">
+
+    <!-- Citation -->
+    <section>
+      <h2>Citation</h2>
+      <p>If you build on this work, please cite our paper:</p>
+      <div class="bibtex-wrap">
+        <button class="copy-btn" id="copyBtn" type="button">Copy</button>
+<pre class="bibtex" id="bibtex">@misc{kortukov2026predictingfuturebehaviorsreasoning,
+      title={Predicting Future Behaviors in Reasoning Models Enables Better Steering},
+      author={Evgenii Kortukov and Piotr Komorowski and Florian Klein and Paula Engl
+              and Gabriele Sarti and Seong Joon Oh and Sebastian Lapuschkin and Wojciech Samek},
+      year={2026},
+      eprint={2606.11172},
+      archivePrefix={arXiv},
+      primaryClass={cs.LG},
+      url={https://arxiv.org/abs/2606.11172},
+}</pre>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<footer>
+  <div class="wrap">
+    <p>
+      <a href="https://arxiv.org/abs/2606.11172">Paper</a> &nbsp;·&nbsp;
+      <a href="https://github.com/kortukov/future_probes">Code</a> &nbsp;·&nbsp;
+      <a href="https://behavior-distributions-demo.github.io/">Demo</a> &nbsp;·&nbsp;
+      <a href="https://huggingface.co/future-probes">Data</a>
+    </p>
+  </div>
+</footer>
+
+<script>
+  document.getElementById('copyBtn').addEventListener('click', function () {
+    var text = document.getElementById('bibtex').innerText;
+    navigator.clipboard.writeText(text).then(function () {
+      var b = document.getElementById('copyBtn');
+      var old = b.textContent;
+      b.textContent = 'Copied!';
+      setTimeout(function () { b.textContent = old; }, 1600);
+    });
+  });
+</script>
+</body>
+</html>
