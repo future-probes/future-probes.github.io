@@ -213,7 +213,6 @@
     box-shadow: 0 2px 10px rgba(0,0,0,0.06);
   }
   figure.narrow img { max-width: 80%; }
-  figure.w60 img { max-width: 60%; }
 
   /* Code figure (FPCG pseudocode) */
   figure.codefig { margin: 30px auto; max-width: 640px; text-align: left; }
@@ -336,8 +335,8 @@
 
     <!-- ----- Resource links with thumbnails ----- -->
     <nav class="resources">
-      <a class="resource" href="https://arxiv.org/abs/2606.11172">
-        <span class="thumb"><img class="shot" src="figures/thumbs/arxiv_paper.jpg" alt="arXiv paper preview"></span>
+      <a class="resource" href="https://openreview.net/forum?id=48NnVTsirb">
+        <span class="thumb"><img class="shot" src="figures/thumbs/arxiv_paper.jpg" alt="paper preview"></span>
         <span class="label">Paper</span>
       </a>
 
@@ -448,15 +447,6 @@
         using an activation probe that predicts future behavior likelihoods.
       </p>
 
-      <figure class="framed w60">
-        <img src="figures/fpcg.png" alt="The Future Probe Controlled Generation (FPCG) algorithm.">
-        <figcaption>
-          <span class="fignum">FPCG.</span> For each reasoning step, the model generates several candidate
-          sentences and chooses the one that maximizes the activation of a prediction feature for the
-          desired behavior &mdash; steering at the text level, without modifying activations.
-        </figcaption>
-      </figure>
-
       <figure class="codefig">
 <pre class="codeblock"><code class="language-python">def future_probe_controlled_generation(
     model, prompt, future_probe,
@@ -486,8 +476,9 @@
     return response
 </code></pre>
         <figcaption>
-          <span class="fignum">FPCG, in pseudocode.</span> The same algorithm as above: sample sentence
-          candidates, score each with the future probe, and append the highest- (or lowest-) scoring one.
+          <span class="fignum">FPCG.</span> For each reasoning step, the model generates several candidate
+          sentences and chooses the one that maximizes the activation of a prediction feature for the
+          desired behavior &mdash; steering at the text level, without modifying activations.
         </figcaption>
       </figure>
     </section>
@@ -496,7 +487,7 @@
         We find that FPCG enables steering with less quality degradation than standard difference-in-means activation steering.
     </p>
     <div class="callout">
-        🔎 <a href="https://arxiv.org/abs/2606.11172">Read our paper to learn more! &rarr;</a>
+        🔎 <a href="https://openreview.net/forum?id=48NnVTsirb">Read our paper to learn more! &rarr;</a>
       </div>
 
     <hr class="rule">
